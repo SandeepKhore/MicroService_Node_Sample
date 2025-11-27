@@ -1,0 +1,6 @@
+const User = require('../models/User');
+
+module.exports = () => ({
+  findByEmail: (email) => User.findOne({ email }),
+  createUser: (data) => User.create(data),
+});
