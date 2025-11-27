@@ -62,17 +62,24 @@ Key environment variables per service (see `.env.example` files for defaults):
 ## Folder Structure
 
 ```
-shared/                 # Logger + EventBus utilities
+shared/                       # Logger + EventBus utilities
 auth-service/
   src/
-    clients/            # Mongo and Redis clients
-    models/             # Mongoose models
-    routes/             # Express routes
-    services/           # Domain logic
+    clients/                  # Mongo/Redis connection helpers
+    controllers/              # HTTP layer (authController)
+    models/                   # Mongoose schemas
+    repositories/             # Data access abstraction
+    routes/                   # Express routers
+    services/                 # Domain/service logic
 notification-service/
-  src/workers/          # RabbitMQ consumer -> email.jobs
+  src/
+    config.js                 # Service config loader
+    workers/userEventsWorker  # RabbitMQ consumer -> email jobs
 email-service/
-  src/workers/          # Email queue consumer
+  src/
+    config.js                 # SMTP + queue config
+    workers/emailWorker       # RabbitMQ consumer -> Nodemailer
+docker-compose.yml            # Orchestrates services + infra
 ```
 
 ## Testing the Flow
