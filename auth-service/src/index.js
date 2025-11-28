@@ -3,7 +3,7 @@ const connectMongo = require('./clients/mongo');
 const connectRedis = require('./clients/redis');
 const config = require('./config');
 const buildAuthRoutes = require('./routes/authRoutes');
-const { logger, EventBus } = require('../../shared');
+const { logger, EventBus } = require('../shared');
 
 async function bootstrap() {
   await connectMongo(config.mongoUri);

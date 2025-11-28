@@ -1,5 +1,5 @@
 const { createClient } = require('redis');
-const { logger } = require('../../../shared');
+const { logger } = require('../../shared');
 
 async function connectRedis(url) {
   const client = createClient({ url });

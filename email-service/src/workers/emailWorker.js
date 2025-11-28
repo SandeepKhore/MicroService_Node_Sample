@@ -1,5 +1,5 @@
 const nodemailer = require('nodemailer');
-const { logger } = require('../../../shared');
+const { logger } = require('../../shared');
 
 module.exports = ({ eventBus, config }) => {
   const transporter = nodemailer.createTransport({

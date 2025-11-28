@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { logger } = require('../../../shared');
+const { logger } = require('../../shared');
 
 async function connectMongo(uri) {
   mongoose.connection.on('connected', () => logger.info('MongoDB connected.'));

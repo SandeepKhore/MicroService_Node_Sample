@@ -1,6 +1,6 @@
 const express = require('express');
 const config = require('./config');
-const { EventBus, logger } = require('../../shared');
+const { EventBus, logger } = require('../shared');
 const emailWorker = require('./workers/emailWorker');
 
 async function bootstrap() {

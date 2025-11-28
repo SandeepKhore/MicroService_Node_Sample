@@ -1,4 +1,4 @@
-const { logger } = require('../../../shared');
+const { logger } = require('../../shared');
 
 module.exports = ({ eventBus, config }) => {
   const queueName = config.notificationQueue;

@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { v4: uuid } = require('uuid');
-const { logger } = require('../../../shared');
+const { logger } = require('../../shared');
 const buildUserRepository = require('../repositories/userRepository');
 
 module.exports = ({ redisClient, eventBus, config }) => {

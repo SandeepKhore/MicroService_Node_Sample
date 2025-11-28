@@ -1,5 +1,6 @@
 const amqp = require('amqplib');
 const logger = require('./logger');
+const retry = require('./retry');
 
 class EventBus {
   constructor(url) {
@@ -8,20 +9,34 @@ class EventBus {
     this.channel = null;
   }
 
-  async connect() {
+  async connect(options = {}) {
     if (this.channel) {
       return this.channel;
     }
 
-    this.connection = await amqp.connect(this.url);
-    this.connection.on('error', (err) => logger.error(`RabbitMQ error: ${err.message}`));
-    this.connection.on('close', () => {
-      logger.warn('RabbitMQ connection closed, clearing channel.');
-      this.channel = null;
-      this.connection = null;
-    });
+    await retry(
+      async () => {
+        this.connection = await amqp.connect(this.url);
+        this.connection.on('error', (err) => logger.error(`RabbitMQ error: ${err.message}`));
+        this.connection.on('close', () => {
+          logger.warn('RabbitMQ connection closed, clearing channel.');
+          this.channel = null;
+          this.connection = null;
+        });
 
-    this.channel = await this.connection.createChannel();
+        this.channel = await this.connection.createChannel();
+        logger.info('RabbitMQ connected successfully');
+        return this.channel;
+      },
+      {
+        maxRetries: options.maxRetries || 10,
+        delay: options.delay || 2000,
+        onRetry: (error, attempt, delay) => {
+          logger.warn(`RabbitMQ connection attempt ${attempt} failed, retrying in ${delay}ms...`);
+        },
+      }
+    );
+
     return this.channel;
   }
 

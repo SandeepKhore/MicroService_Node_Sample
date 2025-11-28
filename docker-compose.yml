@@ -21,15 +21,24 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   auth-service:
     build:
       context: .
       dockerfile: auth-service/Dockerfile
     depends_on:
-      - mongo
-      - redis
-      - rabbitmq
+      mongo:
+        condition: service_started
+      redis:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
     env_file:
       - auth-service/.env.example
     ports:
@@ -40,7 +49,8 @@ services:
       context: .
       dockerfile: notification-service/Dockerfile
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     env_file:
       - notification-service/.env.example
     ports:
@@ -51,7 +61,8 @@ services:
       context: .
       dockerfile: email-service/Dockerfile
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     env_file:
       - email-service/.env.example
     ports:
